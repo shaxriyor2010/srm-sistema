@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -45,6 +45,13 @@ export function Layout({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [loginOpen, setLoginOpen] = useState(false)
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
+
   function handleLogin(email, password) {
     const valid = email === 'admin@learncrm.uz' && password === 'admin123'
     if (valid) {
@@ -73,6 +80,7 @@ export function Layout({ children }) {
             <NavLink
               key={to}
               to={to}
+              onClick={() => setMenuOpen(false)}
               className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
             >
               <Icon size={18} />
@@ -81,6 +89,8 @@ export function Layout({ children }) {
           ))}
         </nav>
       </aside>
+
+      {menuOpen ? <button className="sidebar-backdrop" type="button" aria-label="Close navigation" onClick={() => setMenuOpen(false)} /> : null}
 
       <div className="main-panel">
         <header className="topbar glass-card">
